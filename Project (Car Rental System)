@@ -351,3 +351,83 @@ public class CarRentalRegistrationSystem {
     }
 }
 
+//car.java
+
+package carrentalregistrationsystem;
+
+
+
+/**
+ *
+ * @author HP
+ */
+public class Car {
+
+    private final String renterName;
+    private final String plateNum;
+    private final String carType;
+    private String date_rented;
+    private String date_returned;
+    private String price;
+
+    Car(String renterName, String plateNum, String carType, String date_rented, String date_returned, String price) {
+        
+        this.renterName = renterName;
+        this.plateNum = plateNum;
+        this.carType = carType;
+        this.date_rented = date_rented;
+        this.date_returned = date_returned;
+        this.price = price;
+    }
+
+    
+
+    void setDateRented(String date_rented){
+        this.date_rented = date_rented;
+    }
+    
+    void setDateReturned(String date_returned){
+        this.date_returned = date_returned;
+        
+    }
+    
+    void setPrice (String price){
+        this.price = price;
+        
+    }
+    
+    String getRenterName(){
+        return renterName;
+        
+    }
+    
+    String getPlateNum(){
+        return plateNum;
+        
+    }
+    
+    String getCarType(){
+        return carType;
+        
+    }
+    
+    String getDateRented (){
+        return date_rented;
+        
+    }
+    
+    String getDateReturned(){
+        return date_returned;
+        
+    }
+    
+    String getPrice(){
+        return price;
+        }
+    }
+
+
+
+
+
+
