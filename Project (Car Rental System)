@@ -1,0 +1,353 @@
+ackage carrentalregistrationsystem;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author user
+ */
+public class CarRentalRegistrationSystem {
+    
+    
+
+    ArrayList<Car> carlist = new ArrayList<Car>();
+    String header[] = new String[]{"Plate number", "Car type", "Renter name", "Date rented", "Date returned", "Price (RM)"};
+    DefaultTableModel dtm = new DefaultTableModel(header, 1);
+
+    CarRentalRegistrationSystem() {
+
+        JFrame frame = new JFrame("Car Rental Registration System ");
+        frame.setSize(950, 450);
+
+        JLabel jlabel = new JLabel("Car type");
+        jlabel.setBounds(10, 10, 60, 20);
+        frame.add(jlabel);
+
+        JLabel jlabela = new JLabel("Plate number");
+        jlabela.setBounds(10, 30, 80, 20);
+        frame.add(jlabela);
+
+        JLabel jlabelb = new JLabel("Renter name");
+        jlabelb.setBounds(10, 50, 80, 20);
+        frame.add(jlabelb);
+
+        JLabel jlabelc = new JLabel("Date rented");
+        jlabelc.setBounds(10, 70, 80, 20);
+        frame.add(jlabelc);
+
+        JLabel jlabeld = new JLabel("Date returned");
+        jlabeld.setBounds(10, 90, 80, 20);
+        frame.add(jlabeld);
+
+        JLabel jlabele = new JLabel("Price");
+        jlabele.setBounds(10, 110, 80, 20);
+        frame.add(jlabele);
+
+        JTextField jtfcarType = new JTextField();
+        jtfcarType.setBounds(100, 50, 150, 20);
+        frame.add(jtfcarType);
+
+        JTextField jtfplateNum = new JTextField();
+        jtfplateNum.setBounds(100, 30, 100, 20);
+        frame.add(jtfplateNum);
+
+        JTextField jtfrenterName = new JTextField();
+        jtfrenterName.setBounds(100, 10, 150, 20);
+        frame.add(jtfrenterName);
+
+        JTextField jtfdateRented = new JTextField();
+        jtfdateRented.setBounds(100, 70, 100, 20);
+        frame.add(jtfdateRented);
+
+        JTextField jtfdateReturned = new JTextField();
+        jtfdateReturned.setBounds(100, 90, 100, 20);
+        frame.add(jtfdateReturned);
+
+        JTextField jtfprice = new JTextField();
+        jtfprice.setBounds(100, 110, 100, 20);
+        frame.add(jtfprice);
+
+        JButton jbuttoninsert = new JButton("INSERT");
+        jbuttoninsert.setBounds(80, 150, 90, 20);
+        frame.add(jbuttoninsert);
+
+        JButton jbuttondelete = new JButton("DELETE");
+        jbuttondelete.setBounds(180, 150, 90, 20);
+        frame.add(jbuttondelete);
+
+        JButton jbuttonsearch = new JButton("SEARCH");
+        jbuttonsearch.setBounds(80, 190, 90, 20);
+        frame.add(jbuttonsearch);
+
+        JButton jbuttonupdate = new JButton("UPDATE");
+        jbuttonupdate.setBounds(180, 190, 90, 20);
+        frame.add(jbuttonupdate);
+
+        JButton jbuttonexit = new JButton("EXIT");
+        jbuttonexit.setBounds(720, 380, 150, 20);
+        frame.add(jbuttonexit);
+
+        //table creation
+        JTable jtable = new JTable();
+        jtable.setBounds(20, 140, 250, 250);
+        frame.add(jtable);
+        jtable.setModel(dtm);
+        JScrollPane scrollPane = new JScrollPane(jtable);
+        scrollPane.setBounds(330, 15, 570, 350);
+        frame.add(scrollPane);
+        jtable.getColumnModel().getColumn(0).setPreferredWidth(100);
+        jtable.getColumnModel().getColumn(1).setPreferredWidth(130);
+        jtable.getColumnModel().getColumn(2).setPreferredWidth(120);
+        jtable.getColumnModel().getColumn(3).setPreferredWidth(100);
+        jtable.getColumnModel().getColumn(4).setPreferredWidth(100);
+        jtable.getColumnModel().getColumn(5).setPreferredWidth(100);
+
+        jbuttoninsert.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                
+                String plateNum = jtfplateNum.getText().toUpperCase();
+                String carType = jtfcarType.getText();
+                String renterName = jtfrenterName.getText();
+                String date_rented = jtfdateRented.getText();
+                String date_returned = jtfdateReturned.getText();
+                String price = jtfprice.getText();
+                if (carType.length() < 1) {
+                    JOptionPane.showMessageDialog(frame, "Car type should  not be blank!!!");
+                    return;
+                }
+
+                Car car = new Car(carType, plateNum, renterName , date_rented, date_returned, price);
+                carlist.add(car);//create object list array
+                writeData();
+            }
+        });
+
+        jbuttondelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String plateNum = JOptionPane.showInputDialog("Plate number to delete?");
+                if (plateNum != null) {
+                    System.out.println("not null");
+                    for (int i = 0; i < carlist.size(); i++) {
+                        if (carlist.get(i).getPlateNum().equalsIgnoreCase(plateNum)) {
+                            carlist.remove(i);
+                        }
+                    }
+                    writeData();
+                }
+            }
+        });
+
+        jbuttonsearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String plateNum = JOptionPane.showInputDialog("Enter Plate Number?");
+                if (plateNum != null) {
+                    for (int i = 0; i < carlist.size(); i++) {
+                        if (carlist.get(i).getPlateNum().equalsIgnoreCase(plateNum)) {
+                            JOptionPane.showMessageDialog(frame, "Found!!!");
+                            jtfplateNum.setText(carlist.get(i).getPlateNum());
+                            jtfcarType.setText(carlist.get(i).getCarType());
+                            jtfrenterName.setText(carlist.get(i).getRenterName());
+                            jtfdateRented.setText(carlist.get(i).getDateRented());
+                            jtfdateReturned.setText(carlist.get(i).getDateReturned());
+                            jtfprice.setText(carlist.get(i).getPrice());
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, "Not Found!!!");
+                }
+            }
+        });
+
+        jbuttonupdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String plateNum = jtfplateNum.getText();
+                String carType = jtfcarType.getText();
+                String renterName = jtfrenterName.getText();
+                String date_rented = jtfdateRented.getText();
+                String date_returned = jtfdateReturned.getText();
+                String price = jtfprice.getText();
+
+                if (plateNum != null) {
+                    for (int i = 0; i < carlist.size(); i++) {
+                        if (carlist.get(i).getPlateNum().equalsIgnoreCase(plateNum)) {
+                            carlist.get(i).setDateRented(date_rented);
+                            carlist.get(i).setDateReturned(date_returned);
+                            carlist.get(i).setPrice(price);
+                            
+                            JOptionPane.showMessageDialog(frame, "Updated!!!");
+                        }
+                    }
+                }
+                writeData();
+            }
+        });
+        jbuttonexit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                frame.setVisible(false); //you can't see me!
+                frame.dispose();
+            }
+        });
+
+        readData();
+        jtable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = jtable.getSelectedRow();
+                jtfplateNum.setText(dtm.getValueAt(row, 0).toString());
+                jtfcarType.setText(dtm.getValueAt(row, 1).toString());
+                jtfrenterName.setText(dtm.getValueAt(row, 2).toString());
+                jtfdateRented.setText(dtm.getValueAt(row, 3).toString());
+                jtfdateReturned.setText(dtm.getValueAt(row, 4).toString());
+                jtfprice.setText(dtm.getValueAt(row, 5).toString());
+            }
+        });
+
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+        
+        JFrame frame = new JFrame("Login");
+        frame.setSize(300, 150);
+        frame.setLayout(null);
+
+        JLabel label = new JLabel("Username");
+        label.setBounds(10, 10, 70, 20);
+        JTextField jtextfield1 = new JTextField();
+        jtextfield1.setBounds(100, 10, 170, 20);
+        JLabel labe12 = new JLabel("Password");
+        labe12.setBounds(10, 30, 70, 20);
+        JTextField jtextfield2 = new JTextField();
+        jtextfield2.setBounds(100, 30, 170, 20);
+        JButton btnLogin = new JButton("Login");
+        btnLogin.setBounds(100, 60, 170, 20);
+        frame.add(label);
+        frame.add(jtextfield1);
+        frame.add(labe12);
+        frame.add(jtextfield2);
+        frame.add(btnLogin);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String name = jtextfield1.getText();
+                String pass = jtextfield2.getText();
+                if (name.equals("fatin") && pass.equals("12345")) {
+                    CarRentalRegistrationSystem carrentalregistrationsstem = new CarRentalRegistrationSystem();
+                    frame.setVisible(false);
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Incorrect login data");
+                }
+            }
+        });
+
+    
+        
+        
+
+    }
+
+    void readData() { //read data from "data.txt" and display on table
+        try {
+            File file = new File("data.txt"); //create file
+            file.createNewFile();//if not exit
+            FileReader f = new FileReader("data.txt");
+            StringBuffer sb = new StringBuffer();
+            while (f.ready()) {
+                char c = (char) f.read();
+                if (c == '-') {
+                    System.out.println(sb);
+                    String cararray[] = sb.toString().split(",");
+                    Car car = new Car(cararray[0], cararray[1], cararray[2], cararray[3], cararray[4], cararray[5]);
+                    carlist.add(car);
+                    sb = new StringBuffer();
+                } else {
+                    sb.append(c);
+                }
+            }
+            dtm.setRowCount(0); //update table
+            for (int i = 0; i < carlist.size(); i++) {//populate table using object list
+                Object[] objs = {carlist.get(i).getPlateNum(),carlist.get(i).getCarType(),carlist.get(i).getRenterName(), carlist.get(i).getDateRented(), carlist.get(i).getDateReturned(), carlist.get(i).getPrice()};
+                dtm.addRow(objs);
+            }
+        } catch (IOException e) {
+        }
+    }
+
+    private void writeData() { //write data to file "data.txt"
+        try (FileWriter f = new FileWriter("data.txt")) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < carlist.size(); i++) {
+                sb.append(carlist.get(i).getRenterName() + "," + carlist.get(i).getPlateNum() +  ","  + carlist.get(i).getCarType() + "," +  carlist.get(i).getDateRented() + "," + carlist.get(i).getDateReturned() + "," + carlist.get(i).getPrice() + "-");
+            }
+            f.write(sb.toString());
+            f.close();
+        } catch (IOException e) {
+            return;
+        }
+        dtm.setRowCount(0); //update table content
+        for (int i = 0; i < carlist.size(); i++) {//populate table using object list
+            Object[] objs = {carlist.get(i).getPlateNum(),  carlist.get(i).getCarType(),carlist.get(i).getRenterName(), carlist.get(i).getDateRented(), carlist.get(i).getDateReturned(), carlist.get(i).getPrice()};
+            dtm.addRow(objs);
+        }
+    }
+
+    public boolean isInteger(String str) {
+        if (str == null) {
+            return false;
+        }
+        int length = str.length();
+        if (length == 0) {
+            return false;
+        }
+        int i = 0;
+        if (str.charAt(0) == '-') {
+            if (length == 1) {
+                return false;
+            }
+            i = 1;
+        }
+        for (; i < length; i++) {
+            char c = str.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
